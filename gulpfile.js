@@ -25,6 +25,11 @@ gulp.task('map-dev', function () {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('src'));
 });
+gulp.task('watch-dev', function() {
+    gulp.watch('src/*.ts', ['build-dev']);
+    gulp.watch('src/*.ts', ['map-dev']);
+});
+
 gulp.task('build', function () {
     return gulp.src('src/*.js')
         .pipe(concat('generic-date.0.1.js'))
@@ -33,8 +38,5 @@ gulp.task('build', function () {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('watch-dev', function() {
-    gulp.watch('src/*.ts', ['build-dev-v1']);
-    gulp.watch('src/*.ts', ['map-dev-v1']);
-});
+
 
