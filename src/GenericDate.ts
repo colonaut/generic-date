@@ -1,6 +1,7 @@
 import IGenericCalendarRule = require('./IGenericCalendarRule');
 import GenericCalendarRule = require('./GenericCalendarRule');
 import IGenericDate = require('./IGenericDate');
+import Int = require('./Int');
 
 class GenericDate implements IGenericDate {
     private _year:number;
@@ -16,14 +17,6 @@ class GenericDate implements IGenericDate {
     private _is_leap_year:boolean;
     private _time:number;
     private _rule:IGenericCalendarRule;
-
-    private static _divI(n1:number, n2:number):number {
-        return (n1 - (n1 % n2)) / n2;
-    }
-
-    private static _padLeft(value:number, digits:number, char?:string):string {
-        return new Array(digits - String(value).length + 1).join(char || '0') + value;
-    }
 
     constructor(rule:GenericCalendarRule, milliseconds:number);
     constructor(rule:GenericCalendarRule, isoString:string);
@@ -101,12 +94,12 @@ class GenericDate implements IGenericDate {
             }
             else {
                 var passed_milliseconds:number = this._time = arg1;
-                var passed_seconds:number = GenericDate._divI(passed_milliseconds, 1000);
-                var passed_minutes:number = GenericDate._divI(passed_seconds, 60);
-                var passed_hours:number = GenericDate._divI(passed_minutes, 60);
-                var passed_days:number = GenericDate._divI(passed_hours, 24);
+                var passed_seconds:number = Int.div(passed_milliseconds, 1000);
+                var passed_minutes:number = Int.div(passed_seconds, 60);
+                var passed_hours:number = Int.div(passed_minutes, 60);
+                var passed_days:number = Int.div(passed_hours, 24);
                 var passed_leap_days:number = rule.getLeapDaysSince(passed_days);
-                var passed_years:number = GenericDate._divI((passed_days - passed_leap_days), rule.yearDays);
+                var passed_years:number = Int.div((passed_days - passed_leap_days), rule.yearDays);
 
                 this._hour = passed_hours - passed_days * 24;
                 this._minute = passed_minutes - passed_hours * 60;
@@ -140,7 +133,7 @@ class GenericDate implements IGenericDate {
 
         //determine if months are overlapping, adding year and month leap days to days
         if (pM > rule.months.length) {
-            pY += GenericDate._divI(this._month, rule.months.length);
+            pY += Int.div(this._month, rule.months.length);
             pM = pM % rule.months.length;
             pD += rule.getLeapYearsSince(pY, this._year) * (rule.leapYearDays - rule.yearDays);
             pYD = 0;
@@ -159,7 +152,7 @@ class GenericDate implements IGenericDate {
         //determine if days are overlapping
         if (pD > rule.months[pM]) {
             console.log('-> days are more than possible:' + pD);
-            pY += GenericDate._divI(pD, rule.yearDays);
+            pY += Int.div(pD, rule.yearDays);
             var ruleMonthDays = rule.isLeapYear(pY) ? rule.leapMonths[pM] : rule.months[pM];
             while (pD > ruleMonthDays) {
                 console.log('->-> mth, mthdays, left overlapping days', pM, ruleMonthDays, pD);
@@ -190,13 +183,13 @@ class GenericDate implements IGenericDate {
     };
 
     toISOString():string {
-        return GenericDate._padLeft(this._year, 4)
-            + "-" + GenericDate._padLeft(this._month + 1, String(this._rule.months.length + 1).length)
-            + "-" + GenericDate._padLeft(this._month_day, String(Math.max.apply(null, this._rule.months)).length)
-            + "T" + GenericDate._padLeft(this._hour, 2)
-            + ":" + GenericDate._padLeft(this._minute, 2)
-            + ":" + GenericDate._padLeft(this._second, 2)
-            + "." + GenericDate._padLeft(this._millisecond, 3) + "G";
+        return Int.padLeft(this._year, 4)
+            + "-" + Int.padLeft(this._month + 1, String(this._rule.months.length + 1).length)
+            + "-" + Int.padLeft(this._month_day, String(Math.max.apply(null, this._rule.months)).length)
+            + "T" + Int.padLeft(this._hour, 2)
+            + ":" + Int.padLeft(this._minute, 2)
+            + ":" + Int.padLeft(this._second, 2)
+            + "." + Int.padLeft(this._millisecond, 3) + "G";
     }
 
     get isLeapYear():boolean {
