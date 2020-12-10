@@ -1,7 +1,7 @@
 /**
  * Created by kalle on 13.05.2015.
  */
-interface IGenericCalendarRule {
+export default interface IGenericCalendarRule {
     yearDays: number; //How many days has one year
     leapYearDays: number; //how many days has one leap year
     leapYear: Array<number>; //when does a leap year occur
@@ -16,4 +16,3 @@ interface IGenericCalendarRule {
     getLeapYearsSince(year:number, since?:number):number
     getLeapDaysSince(day:number, since?:number):number;
 }
-export = IGenericCalendarRule;

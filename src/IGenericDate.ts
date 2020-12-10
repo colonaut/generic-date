@@ -1,4 +1,4 @@
-interface IGenericDate {
+export default interface IGenericDate {
     year: number;
     yearDay: number;
     month: number;
@@ -12,4 +12,3 @@ interface IGenericDate {
     isLeapYear: boolean;
     toISOString(): string;
 }
-export = IGenericDate;

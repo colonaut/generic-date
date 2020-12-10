@@ -1,22 +1,22 @@
-import IGenericCalendarRule = require('./IGenericCalendarRule');
-import GenericCalendarRule = require('./GenericCalendarRule');
-import IGenericDate = require('./IGenericDate');
-import Int = require('./Int');
+import IGenericCalendarRule from './IGenericCalendarRule';
+import GenericCalendarRule from './GenericCalendarRule';
+import IGenericDate from './IGenericDate';
+import Int from './Int';
 
-class GenericDate implements IGenericDate {
+export default class GenericDate implements IGenericDate {
     private _year:number;
     private _year_day:number;
     private _month:number;
     private _month_day:number;
     private _month_days:number;
     private _week_day:number;
-    private _hour:number;
-    private _minute:number;
-    private _second:number;
-    private _millisecond:number;
+    readonly _hour:number;
+    readonly _minute:number;
+    readonly _second:number;
+    readonly _millisecond:number;
     private _is_leap_year:boolean;
     private _time:number;
-    private _rule:IGenericCalendarRule;
+    readonly _rule:IGenericCalendarRule;
 
     constructor(rule:GenericCalendarRule, milliseconds:number);
     constructor(rule:GenericCalendarRule, isoString:string);
@@ -263,4 +263,3 @@ class GenericDate implements IGenericDate {
         return this._year;
     }
 }
-export = GenericDate;

@@ -1,15 +1,52 @@
-/**
- * Created by kalle on 21.05.2015.
- */
+import {assert, expect} from 'chai';
+import GenericCalendarRule from '../GenericCalendarRule';
+import GenericDate from '../GenericDate';
 
-var chai = require('chai');
-var assert = require('assert');
+//import gregorian_rule_json from '../../test/gregorian-calendar-rule.json';
 
-var GenericCalendarRule = require('../src/GenericCalendarRule');
-var GenericDate = require('../src/GenericDate');
+const gregorian_rule_json = JSON.stringify({
+    year_days: 365,
+    leap_year_days: 366,
+    leap_year: [
+        4,
+        100,
+        400
+    ],
+    months: [
+        31,
+        28,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31
+    ],
+    leap_months: [
+        31,
+        29,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31
+    ],
+    week_days: 7,
+    hours: 24,
+    minutes: 60,
+    seconds: 60
+});
 
-var gregorian_rule_json = require('./gregorian-calendar-rule.json');
-var gregorian_rule = new GenericCalendarRule(JSON.stringify(gregorian_rule_json));
+const gregorian_rule = new GenericCalendarRule(gregorian_rule_json);
 
 describe("A GenericCalendarRule instance", function () {
 

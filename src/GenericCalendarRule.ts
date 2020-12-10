@@ -1,10 +1,10 @@
 /**
  * Created by kalle on 13.05.2015.
  */
-import IGenericCalendarRule = require('./IGenericCalendarRule');
-import Int = require('./Int');
+import IGenericCalendarRule from './IGenericCalendarRule';
+import Int from './Int';
 
-class GenericCalendarRule implements IGenericCalendarRule {
+export default class GenericCalendarRule implements IGenericCalendarRule {
     private _rule;
 
     constructor(json:string) {
@@ -107,4 +107,3 @@ class GenericCalendarRule implements IGenericCalendarRule {
     }
 
 }
-export = GenericCalendarRule;
