@@ -18,29 +18,27 @@ export default class GenericDate implements IGenericDate {
     private _time:number;
     readonly _rule:IGenericCalendarRule;
 
-    constructor(rule:GenericCalendarRule, milliseconds:number);
-    constructor(rule:GenericCalendarRule, isoString:string);
-    constructor(rule:GenericCalendarRule, year:number, month:number, day:number);
-    constructor(rule:GenericCalendarRule, year:number, month:number, day:number, hour:number);
-    constructor(rule:GenericCalendarRule, year:number, month:number, day:number, hour:number, minute:number);
-    constructor(rule:GenericCalendarRule, year:number, month:number, day:number, hour:number, minute:number, second:number);
-    constructor(rule:GenericCalendarRule, year:number, month:number, day:number, hour:number, minute:number, second:number, millisecond:number);
+    constructor(rule:IGenericCalendarRule, isoString:string);
+    constructor(rule:IGenericCalendarRule, milliseconds:number);
+    constructor(rule:IGenericCalendarRule, year:number, day:number);
+    constructor(rule:IGenericCalendarRule, year:number, month:number, day?:number, hour?:number, minute?:number, second?:number, millisecond?:number);
 
     constructor(rule:GenericCalendarRule, arg1:any, arg2?:any, arg3?:any, arg4?:any, arg5?:any, arg6?:any, arg7?:any) {
+
         this._rule = rule;
 
-        if (typeof arg1 == 'string') { //TODO: x-y-z, vs x-y. x-y y should be yeardays then. as some calendars might not have months....
-            var date_time:Array<string> = arg1.split('T');
-            var date:Array<string> = date_time[0].split('-');
+        if (typeof arg1 === 'string') { //TODO: x-y-z, vs x-y. x-y y should be yeardays then. as some calendars might not have months....
+            const date_time:Array<string> = arg1.split('T');
+            const date:Array<string> = date_time[0].split('-');
 
             this._year = parseInt(date[0]);
             this._month = parseInt(date[1] || '1') - 1;
             this._month_day = parseInt(date[2] || '1');
             this._is_leap_year = rule.isLeapYear(this._year);
 
-            var months = this.isLeapYear ? rule.leapMonths : rule.months;
+            const months = this.isLeapYear ? rule.leapMonths : rule.months;
             this._year_day = 0;
-            for (var i = 0; i < this._month; i++) {
+            for (let i = 0; i < this._month; i++) {
                 this._year_day += months[i];
             }
             this._year_day += this._month_day;
@@ -49,14 +47,14 @@ export default class GenericDate implements IGenericDate {
 
             if (date_time.length > 1) {
                 //TODO: implement times incl. overlapping
-                var time:Array<string> = date_time[1].split(':');
+                const time:Array<string> = date_time[1].split(':');
                 //console.log(time, time.length);
             }
             else {
                 this._hour = this._minute = this._second = this._millisecond = 0;
             }
         }
-        else if (typeof arg1 == 'number') {
+        else if (typeof arg1 === 'number') {
             //TODO: implement year_day as second param
             if (typeof arg2 == 'number') {
                 this._year = arg1;
@@ -83,9 +81,9 @@ export default class GenericDate implements IGenericDate {
                     }
                 }
 
-                var months = this.isLeapYear ? rule.leapMonths : rule.months;
+                const months = this.isLeapYear ? rule.leapMonths : rule.months;
                 this._year_day = 0;
-                for (var i = 0; i < this.month; i++)
+                for (let i = 0; i < this.month; i++)
                     this._year_day += months[i];
 
                 this._year_day += this._month_day;
@@ -93,13 +91,13 @@ export default class GenericDate implements IGenericDate {
                 this._applyOverlapping();
             }
             else {
-                var passed_milliseconds:number = this._time = arg1;
-                var passed_seconds:number = Int.div(passed_milliseconds, 1000);
-                var passed_minutes:number = Int.div(passed_seconds, 60);
-                var passed_hours:number = Int.div(passed_minutes, 60);
-                var passed_days:number = Int.div(passed_hours, 24);
-                var passed_leap_days:number = rule.getLeapDaysSince(passed_days);
-                var passed_years:number = Int.div((passed_days - passed_leap_days), rule.yearDays);
+                const passed_milliseconds:number = this._time = arg1;
+                const passed_seconds:number = Int.div(passed_milliseconds, 1000);
+                const passed_minutes:number = Int.div(passed_seconds, 60);
+                const passed_hours:number = Int.div(passed_minutes, 60);
+                const passed_days:number = Int.div(passed_hours, 24);
+                const passed_leap_days:number = rule.getLeapDaysSince(passed_days);
+                const passed_years:number = Int.div((passed_days - passed_leap_days), rule.yearDays);
 
                 this._hour = passed_hours - passed_days * 24;
                 this._minute = passed_minutes - passed_hours * 60;
@@ -109,9 +107,9 @@ export default class GenericDate implements IGenericDate {
                 this._is_leap_year = rule.isLeapYear(this._year);
                 this._year_day = (passed_days - passed_leap_days) % rule.yearDays + 1;
 
-                var months = this._is_leap_year ? rule.leapMonths : rule.months;
-                var month_day = this._year_day;
-                for (var i = 0; i < rule.months.length; i++) {
+                const months = this._is_leap_year ? rule.leapMonths : rule.months;
+                let month_day = this._year_day;
+                for (let i = 0; i < rule.months.length; i++) {
                     this._month = i;
                     if (months[i] > month_day)
                         break;
@@ -125,7 +123,7 @@ export default class GenericDate implements IGenericDate {
     }
 
     private _applyOverlapping = ():void => {
-        var pY = this._year,
+        let pY = this._year,
             pM = this._month,
             pD = this._month_day,
             pYD = this._year_day,
@@ -137,8 +135,8 @@ export default class GenericDate implements IGenericDate {
             pM = pM % rule.months.length;
             pD += rule.getLeapYearsSince(pY, this._year) * (rule.leapYearDays - rule.yearDays);
             pYD = 0;
-            var pIsLeapYear = rule.isLeapYear(pY);
-            for (var i = 0; i < pM; i++) {
+            let pIsLeapYear = rule.isLeapYear(pY);
+            for (let i = 0; i < pM; i++) {
                 pYD += rule.months[i];
                 if (pIsLeapYear) {
                     pD += rule.leapMonths[i] - rule.months[i];
@@ -153,7 +151,7 @@ export default class GenericDate implements IGenericDate {
         if (pD > rule.months[pM]) {
             console.log('-> days are more than possible:' + pD);
             pY += Int.div(pD, rule.yearDays);
-            var ruleMonthDays = rule.isLeapYear(pY) ? rule.leapMonths[pM] : rule.months[pM];
+            let ruleMonthDays = rule.isLeapYear(pY) ? rule.leapMonths[pM] : rule.months[pM];
             while (pD > ruleMonthDays) {
                 console.log('->-> mth, mthdays, left overlapping days', pM, ruleMonthDays, pD);
                 pD = pD - ruleMonthDays;
@@ -248,9 +246,9 @@ export default class GenericDate implements IGenericDate {
     get yearDay():number {
         //TODO: code must be removed, once this is done in constructor.
         if (!this._year_day) {
-            var months = this.isLeapYear ? this._rule.leapMonths : this._rule.months;
+            const months = this.isLeapYear ? this._rule.leapMonths : this._rule.months;
             this._year_day = 0;
-            for (var i = 0; i < this.month; i++) {
+            for (let i = 0; i < this.month; i++) {
                 this._year_day += months[i];
             }
             this._year_day += this.monthDay;

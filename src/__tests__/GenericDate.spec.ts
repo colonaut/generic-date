@@ -2,8 +2,6 @@ import {assert, expect} from 'chai';
 import GenericCalendarRule from '../GenericCalendarRule';
 import GenericDate from '../GenericDate';
 
-//import gregorian_rule_json from '../../test/gregorian-calendar-rule.json';
-
 const gregorian_rule_json = JSON.stringify({
     year_days: 365,
     leap_year_days: 366,
@@ -45,8 +43,8 @@ const gregorian_rule_json = JSON.stringify({
     minutes: 60,
     seconds: 60
 });
-
 const gregorian_rule = new GenericCalendarRule(gregorian_rule_json);
+
 
 describe("A GenericCalendarRule instance", function () {
 
